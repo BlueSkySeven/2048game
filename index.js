@@ -1,14 +1,11 @@
-/**
- * Created by lenovo on 2017/6/10.
- */
-var app = new PIXI.Application(window.innerWidth, window.innerHeight, {backgroundColor:0xFFC0CB});
+var app = new PIXI.Application(window.innerWidth, window.innerHeight, {backgroundColor:0xFFFACD});
 document.body.appendChild(app.view);
 
-var basicText = new PIXI.Text('2048',{fontSize:233,fill: '#FFB6C1',
+var basicText = new PIXI.Text('2048',{fontSize:233,fill: '#00FF00',
 
     fontFamily: 'Arial',
     align: 'center',
-    stroke: '#FF69B4',
+    stroke: '#32CD32',
     strokeThickness: 6});
 
 basicText.anchor.set(0.5);//将Text左上角的光标移动到Text的中间，方便居中
@@ -17,36 +14,45 @@ basicText.y = app.renderer.height / 4;
 app.stage.addChild(basicText);
 
 
+function GetRandomNumber() {
+    return Math.floor(Math.random() * 4);
+}
+function DrawCell(x,y) {
+    var color= 0xFFD700;
+    if(gaid[x][y] == 0)
+    {
+        color=0xFFFF00;
+    }
+    var graphics = new PIXI.Graphics();
+    graphics.beginFill(color, 1);
+    graphics.drawRect(window.innerWidth / 5 + 155 * x, window.innerHeight / 8 * 3 + 155 * y, 150, 150);
+
+    app.stage.addChild(graphics);
+
+    var Number = new PIXI.Text(gaid[x][y], {fontSize: 100, fill: '#DC143C'});
+    Number.anchor.set(0.5);//将Text左上角的光标移动到Text的中间，方便居中
+    Number.x = 155 / 2 + window.innerWidth / 5 + 155 * x;
+    Number.y = 155 / 2 + window.innerHeight / 8 * 3 + 155 * y;
+    app.stage.addChild(Number);
+}
+
 var gaid=[];
 for (var i=0 ;i<4;i++)
 {
     gaid[i]=[0,0,0,0];
 }
+var DrawX=GetRandomNumber();
+var DrawY=GetRandomNumber();
+
+gaid[DrawX][DrawY] = 2;
+
 for(var i=0;i<4;i++)
 {
     for(var j=0;j<4;j++)
     {
-        var graphics = new PIXI.Graphics();
-
-        graphics.beginFill(0xFFF0F5, 1);
-        graphics.drawRect(window.innerWidth/5 + j*155,window.innerHeight/8 *3 + i*155 , 150, 150);
-
-        app.stage.addChild(graphics);
+        DrawCell(i,j);
     }
 }
-function GetRandomNumber() {
-    return Math.floor(Math.random() * 4);
-}
-var x=GetRandomNumber();
-var y=GetRandomNumber();
-var graphics = new PIXI.Graphics();
-graphics.beginFill(0xF08080, 1);
-graphics.drawRect(window.innerWidth/5 + 155*x,window.innerHeight/8 *3 + 155*y , 150, 150);
-
-app.stage.addChild(graphics);
-var basicText = new PIXI.Text('2',{fontSize:100,fill: '#DC143C'});
-
-basicText.anchor.set(0.5);//将Text左上角的光标移动到Text的中间，方便居中
-basicText.x =155/2 + window.innerWidth/5 + 155*x;
-basicText.y =155/2 + window.innerHeight/8*3 + 155*y;
-app.stage.addChild(basicText);
+document.addEventListener("keydown",function(event){
+    console.log("1");
+})
