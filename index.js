@@ -13,47 +13,83 @@ basicText.x = app.renderer.width/2;
 basicText.y = app.renderer.height / 4;
 app.stage.addChild(basicText);
 
+function getColorByNumber(number) {
+    var colorValue = {
+        0: 0xFFFF00,
+        2: 0xFFD700,
+        4: 0xFFA500
+    };
 
+    return colorValue[number];
+}
 function GetRandomNumber() {
     return Math.floor(Math.random() * 4);
 }
-function DrawCell(x,y) {
-    var color= 0xFFD700;
-    if(gaid[x][y] == 0)
-    {
-        color=0xFFFF00;
-    }
+function DrawCell(rowIndex, columnIndex) {
     var graphics = new PIXI.Graphics();
-    graphics.beginFill(color, 1);
-    graphics.drawRect(window.innerWidth / 5 + 155 * x, window.innerHeight / 8 * 3 + 155 * y, 150, 150);
+    graphics.beginFill(getColorByNumber(grid[rowIndex][columnIndex]), 1);
+    graphics.drawRect(window.innerWidth / 5 + 155 * columnIndex, window.innerHeight / 8 * 3 + 155 * rowIndex, 150, 150);
 
     app.stage.addChild(graphics);
-    if(gaid[x][y]!=0) {
-        var Number = new PIXI.Text(gaid[x][y], {fontSize: 100, fill: '#DC143C'});
+    if(grid[rowIndex][columnIndex]!=0) {
+        var Number = new PIXI.Text(grid[rowIndex][columnIndex], {fontSize: 100, fill: '#DC143C'});
         Number.anchor.set(0.5);//将Text左上角的光标移动到Text的中间，方便居中
-        Number.x = 155 / 2 + window.innerWidth / 5 + 155 * x;
-        Number.y = 155 / 2 + window.innerHeight / 8 * 3 + 155 * y;
+        Number.x = 155 / 2 + window.innerWidth / 5 + 155 * columnIndex;
+        Number.y = 155 / 2 + window.innerHeight / 8 * 3 + 155 * rowIndex;
         app.stage.addChild(Number);
     }
 }
 
-var gaid=[];
+var grid=[];
 for (var i=0 ;i<4;i++)
 {
-    gaid[i]=[0,0,0,0];
+    grid[i]=[0,0,0,0];
 }
-var DrawX=GetRandomNumber();
-var DrawY=GetRandomNumber();
+var rowIndex=GetRandomNumber();
+var columnIndex=GetRandomNumber();
 
-gaid[DrawX][DrawY] = 2;
+grid[rowIndex][columnIndex] = 2;
 
-for(var i=0;i<4;i++)
-{
-    for(var j=0;j<4;j++)
-    {
-        DrawCell(i,j);
+function flushUI() {
+    for (var i = 0; i < 4; i++) {
+        for (var j = 0; j < 4; j++) {
+            DrawCell(i, j);
+        }
     }
 }
+flushUI();
 document.addEventListener("keydown",function(event){
-    console.log("1");
+    if (event.keyCode === 39) {
+        moveCellToRight();
+        flushUI();
+    }
 })
+function moveCellToRight() {
+    for (var rowIndex = 0; rowIndex < 4; rowIndex++) {
+        for (var columnIndex = 2; columnIndex >= 0; columnIndex--) {
+            if (grid[rowIndex][columnIndex] === 0) continue;
+
+            var theEmptyCellIndex = findTheFirstRightCell(rowIndex, columnIndex);
+            if (theEmptyCellIndex !== -1) {
+                grid[rowIndex][theEmptyCellIndex] = grid[rowIndex][columnIndex];
+                grid[rowIndex][columnIndex] = 0;
+
+                if (grid[rowIndex][theEmptyCellIndex] === grid[rowIndex][theEmptyCellIndex + 1]) {
+                    grid[rowIndex][theEmptyCellIndex+ 1] += grid[rowIndex][theEmptyCellIndex];
+                    grid[rowIndex][theEmptyCellIndex] = 0;
+                }
+            }
+
+        }
+    }
+}
+
+function findTheFirstRightCell(rowIndex, columnIndex) {
+    for (var i = 3; i > columnIndex; i--) {
+        if (grid[rowIndex][i] === 0) {
+            return i;
+        }
+    }
+
+    return -1;
+}
