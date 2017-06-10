@@ -28,12 +28,13 @@ function DrawCell(x,y) {
     graphics.drawRect(window.innerWidth / 5 + 155 * x, window.innerHeight / 8 * 3 + 155 * y, 150, 150);
 
     app.stage.addChild(graphics);
-
-    var Number = new PIXI.Text(gaid[x][y], {fontSize: 100, fill: '#DC143C'});
-    Number.anchor.set(0.5);//将Text左上角的光标移动到Text的中间，方便居中
-    Number.x = 155 / 2 + window.innerWidth / 5 + 155 * x;
-    Number.y = 155 / 2 + window.innerHeight / 8 * 3 + 155 * y;
-    app.stage.addChild(Number);
+    if(gaid[x][y]!=0) {
+        var Number = new PIXI.Text(gaid[x][y], {fontSize: 100, fill: '#DC143C'});
+        Number.anchor.set(0.5);//将Text左上角的光标移动到Text的中间，方便居中
+        Number.x = 155 / 2 + window.innerWidth / 5 + 155 * x;
+        Number.y = 155 / 2 + window.innerHeight / 8 * 3 + 155 * y;
+        app.stage.addChild(Number);
+    }
 }
 
 var gaid=[];
